@@ -2,11 +2,11 @@
 
 ## 🔥 High Priority
 
-- [ ] **Drag & Drop zwischen Spalten**
+- [x] **Drag & Drop zwischen Spalten**
   - Tickets per Drag & Drop verschieben (z.B. mit `@dnd-kit/core`)
   - Smooth Animationen
 
-- [ ] **Ticket bearbeiten**
+- [x] **Ticket bearbeiten**
   - Edit-Modal für bestehende Tickets
   - Alle Felder editierbar (Titel, Beschreibung, Priority, Labels)
 
