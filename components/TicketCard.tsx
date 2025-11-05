@@ -4,6 +4,7 @@ import type { Ticket, Label } from '@/types/ticket';
 import { useAuth } from '@/contexts/AuthContext';
 import { updateTicket, deleteTicket, getAllLabels } from '@/lib/firestore';
 import { useState, useEffect } from 'react';
+import EditTicketModal from './EditTicketModal';
 
 interface TicketCardProps {
   ticket: Ticket;
@@ -12,6 +13,7 @@ interface TicketCardProps {
 export default function TicketCard({ ticket }: TicketCardProps) {
   const { user } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [labels, setLabels] = useState<Label[]>([]);
 
   useEffect(() => {
@@ -48,19 +50,31 @@ export default function TicketCard({ ticket }: TicketCardProps) {
   };
 
   return (
-    <div className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isDeleting ? 'opacity-50' : ''}`}>
-      <div className="flex items-start justify-between mb-2">
-        <h4 className="font-medium text-gray-900 flex-1">{ticket.title}</h4>
-        <button
-          onClick={handleDelete}
-          className="text-gray-400 hover:text-red-500 ml-2"
-          title="Löschen"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+    <>
+      <div className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isDeleting ? 'opacity-50' : ''}`}>
+        <div className="flex items-start justify-between mb-2">
+          <h4 className="font-medium text-gray-900 flex-1">{ticket.title}</h4>
+          <div className="flex gap-1 ml-2">
+            <button
+              onClick={() => setShowEditModal(true)}
+              className="text-gray-400 hover:text-blue-500"
+              title="Bearbeiten"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-gray-400 hover:text-red-500"
+              title="Löschen"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
 
       {ticket.description && (
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">
@@ -116,5 +130,13 @@ export default function TicketCard({ ticket }: TicketCardProps) {
         </button>
       </div>
     </div>
+
+    {showEditModal && (
+      <EditTicketModal
+        ticket={ticket}
+        onClose={() => setShowEditModal(false)}
+      />
+    )}
+  </>
   );
 }

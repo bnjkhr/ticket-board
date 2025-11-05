@@ -2,15 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { subscribeToTickets } from '@/lib/firestore';
-import type { Ticket } from '@/types/ticket';
-import TicketCard from './TicketCard';
+import { subscribeToTickets, updateTicket } from '@/lib/firestore';
+import type { Ticket, TicketStatus } from '@/types/ticket';
+import DroppableColumn from './DroppableColumn';
 import CreateTicketButton from './CreateTicketButton';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+} from '@dnd-kit/core';
 
 export default function Board() {
   const { user } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -27,6 +45,30 @@ export default function Board() {
   const inProgressTickets = tickets.filter((t) => t.status === 'in-progress');
   const doneTickets = tickets.filter((t) => t.status === 'done');
 
+  const handleDragStart = (event: DragStartEvent) => {
+    const ticket = tickets.find((t) => t.id === event.active.id);
+    if (ticket) {
+      setActiveTicket(ticket);
+    }
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveTicket(null);
+    const { active, over } = event;
+
+    if (!over) return;
+
+    // Extract status from droppable container id
+    const newStatus = over.id as TicketStatus;
+    const ticketId = active.id as string;
+
+    const ticket = tickets.find((t) => t.id === ticketId);
+    if (!ticket || ticket.status === newStatus) return;
+
+    // Update ticket status
+    await updateTicket(ticketId, { status: newStatus });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -36,67 +78,24 @@ export default function Board() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Deine Tickets</h2>
-        <CreateTicketButton />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Todo Column */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">To Do</h3>
-            <span className="text-sm text-gray-500">{todoTickets.length}</span>
-          </div>
-          <div className="space-y-3">
-            {todoTickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
-            {todoTickets.length === 0 && (
-              <p className="text-sm text-gray-400 text-center py-8">
-                Keine Tickets
-              </p>
-            )}
-          </div>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">Deine Tickets</h2>
+          <CreateTicketButton />
         </div>
 
-        {/* In Progress Column */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">In Progress</h3>
-            <span className="text-sm text-gray-500">{inProgressTickets.length}</span>
-          </div>
-          <div className="space-y-3">
-            {inProgressTickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
-            {inProgressTickets.length === 0 && (
-              <p className="text-sm text-gray-400 text-center py-8">
-                Keine Tickets
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Done Column */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Done</h3>
-            <span className="text-sm text-gray-500">{doneTickets.length}</span>
-          </div>
-          <div className="space-y-3">
-            {doneTickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
-            {doneTickets.length === 0 && (
-              <p className="text-sm text-gray-400 text-center py-8">
-                Keine Tickets
-              </p>
-            )}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <DroppableColumn id="todo" title="To Do" tickets={todoTickets} />
+          <DroppableColumn id="in-progress" title="In Progress" tickets={inProgressTickets} />
+          <DroppableColumn id="done" title="Done" tickets={doneTickets} />
         </div>
       </div>
-    </div>
+    </DndContext>
   );
 }
