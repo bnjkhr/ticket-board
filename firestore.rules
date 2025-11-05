@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Tickets collection - users can only access their own tickets
+    match /tickets/{ticketId} {
+      // Allow read if user owns the ticket
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Allow create if user is authenticated and sets their own userId
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+
+      // Allow update if user owns the ticket
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Allow delete if user owns the ticket
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Labels collection - users can only access their own labels
+    match /labels/{labelId} {
+      // Allow read if user owns the label
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Allow create if user is authenticated and sets their own userId
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+
+      // Allow update if user owns the label
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Allow delete if user owns the label
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}
