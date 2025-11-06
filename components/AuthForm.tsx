@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+    checkRegistrationLimit,
+    checkLoginLimit,
+    recordRegistrationAttempt,
+    recordLoginAttempt,
+    getClientIP,
+    type RateLimitStatus,
+} from "@/lib/rateLimit";
 
 export default function AuthForm() {
     const [isLogin, setIsLogin] = useState(true);
@@ -9,21 +17,101 @@ export default function AuthForm() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { signIn, signUp } = useAuth();
+    const [success, setSuccess] = useState("");
+    const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitStatus>({
+        allowed: true,
+    });
+    const { signIn, signUp, resendVerificationEmail } = useAuth();
+    const [clientIP, setClientIP] = useState<string | null>(null);
+
+    useEffect(() => {
+        getClientIP().then(setClientIP);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        setSuccess("");
         setLoading(true);
+
+        // Rate Limiting Check
+        if (isLogin) {
+            const limitCheck = checkLoginLimit(email, clientIP || undefined);
+            if (!limitCheck.allowed) {
+                const blockedInfo =
+                    limitCheck.emailLimit.blockedUntil ||
+                    limitCheck.ipLimit.blockedUntil;
+                setRateLimitInfo({
+                    allowed: false,
+                    blockedUntil: blockedInfo,
+                });
+                setError(
+                    `Zu viele Login-Versuche. Versuche es erneut um ${blockedInfo?.toLocaleTimeString()} oder kontaktiere den Support.`,
+                );
+                setLoading(false);
+                return;
+            }
+            setRateLimitInfo({
+                allowed: true,
+                remainingAttempts: Math.min(
+                    limitCheck.emailLimit.remainingAttempts || 5,
+                    limitCheck.ipLimit.remainingAttempts || 5,
+                ),
+                resetTime:
+                    limitCheck.emailLimit.resetTime ||
+                    limitCheck.ipLimit.resetTime,
+            });
+        } else {
+            const limitCheck = checkRegistrationLimit(
+                email,
+                clientIP || undefined,
+            );
+            if (!limitCheck.allowed) {
+                const blockedInfo =
+                    limitCheck.emailLimit.blockedUntil ||
+                    limitCheck.ipLimit.blockedUntil;
+                setRateLimitInfo({
+                    allowed: false,
+                    blockedUntil: blockedInfo,
+                });
+                setError(
+                    `Zu viele Registrierungsversuche. Versuche es erneut um ${blockedInfo?.toLocaleTimeString()} oder kontaktiere den Support.`,
+                );
+                setLoading(false);
+                return;
+            }
+            setRateLimitInfo({
+                allowed: true,
+                remainingAttempts: Math.min(
+                    limitCheck.emailLimit.remainingAttempts || 3,
+                    limitCheck.ipLimit.remainingAttempts || 3,
+                ),
+                resetTime:
+                    limitCheck.emailLimit.resetTime ||
+                    limitCheck.ipLimit.resetTime,
+            });
+        }
 
         try {
             if (isLogin) {
                 await signIn(email, password);
+                recordLoginAttempt(email, clientIP || undefined);
             } else {
                 await signUp(email, password);
+                recordRegistrationAttempt(email, clientIP || undefined);
+                setSuccess(
+                    "Registrierung erfolgreich! Bitte überprüfe deine E-Mail und klicke auf den Bestätigungslink.",
+                );
             }
         } catch (err: any) {
             console.error(err);
+            // Record failed attempt
+            if (isLogin) {
+                recordLoginAttempt(email, clientIP || undefined);
+            } else {
+                recordRegistrationAttempt(email, clientIP || undefined);
+            }
+
             if (err.code === "auth/email-already-in-use") {
                 setError("Diese E-Mail wird bereits verwendet.");
             } else if (err.code === "auth/weak-password") {
@@ -37,6 +125,10 @@ export default function AuthForm() {
                 setError("Falsche E-Mail oder Passwort.");
             } else if (err.code === "auth/invalid-credential") {
                 setError("Falsche E-Mail oder Passwort.");
+            } else if (err.code === "auth/too-many-requests") {
+                setError(
+                    "Zu viele Anfragen. Bitte warte einen Moment und versuche es erneut.",
+                );
             } else {
                 setError(
                     "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
@@ -45,6 +137,23 @@ export default function AuthForm() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleResendVerification = async () => {
+        try {
+            await resendVerificationEmail();
+            setSuccess("Bestätigungs-E-Mail wurde erneut gesendet.");
+        } catch (error) {
+            setError("Fehler beim Senden der Bestätigungs-E-Mail.");
+        }
+    };
+
+    const formatResetTime = (date: Date) => {
+        const now = new Date();
+        const diff = date.getTime() - now.getTime();
+        const minutes = Math.floor(diff / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        return `${minutes}m ${seconds}s`;
     };
 
     return (
@@ -84,6 +193,58 @@ export default function AuthForm() {
                             </div>
                         )}
 
+                        {success && (
+                            <div className="rounded-2xl bg-success-50 border border-success-200 p-4">
+                                <p className="text-sm text-success-800">
+                                    {success}
+                                </p>
+                            </div>
+                        )}
+
+                        {!isLogin &&
+                            rateLimitInfo.allowed &&
+                            rateLimitInfo.remainingAttempts !== undefined &&
+                            rateLimitInfo.remainingAttempts < 3 && (
+                                <div className="rounded-2xl bg-warning-50 border border-warning-200 p-4">
+                                    <p className="text-sm text-warning-800">
+                                        ⚠️ Noch{" "}
+                                        {rateLimitInfo.remainingAttempts}{" "}
+                                        Registrierungsversuch(e) übrig.
+                                        {rateLimitInfo.resetTime && (
+                                            <span>
+                                                {" "}
+                                                Reset in{" "}
+                                                {formatResetTime(
+                                                    rateLimitInfo.resetTime,
+                                                )}
+                                            </span>
+                                        )}
+                                    </p>
+                                </div>
+                            )}
+
+                        {isLogin &&
+                            rateLimitInfo.allowed &&
+                            rateLimitInfo.remainingAttempts !== undefined &&
+                            rateLimitInfo.remainingAttempts < 5 && (
+                                <div className="rounded-2xl bg-warning-50 border border-warning-200 p-4">
+                                    <p className="text-sm text-warning-800">
+                                        ⚠️ Noch{" "}
+                                        {rateLimitInfo.remainingAttempts}{" "}
+                                        Login-Versuch(e) übrig.
+                                        {rateLimitInfo.resetTime && (
+                                            <span>
+                                                {" "}
+                                                Reset in{" "}
+                                                {formatResetTime(
+                                                    rateLimitInfo.resetTime,
+                                                )}
+                                            </span>
+                                        )}
+                                    </p>
+                                </div>
+                            )}
+
                         <div className="space-y-5">
                             <div>
                                 <label
@@ -102,6 +263,7 @@ export default function AuthForm() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-4 py-3 border border-gray-200 rounded-2xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                                     placeholder="deine@email.de"
+                                    disabled={!rateLimitInfo.allowed}
                                 />
                             </div>
 
@@ -128,6 +290,7 @@ export default function AuthForm() {
                                     }
                                     className="w-full px-4 py-3 border border-gray-200 rounded-2xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                                     placeholder="Mindestens 6 Zeichen"
+                                    disabled={!rateLimitInfo.allowed}
                                 />
                             </div>
                         </div>
@@ -135,7 +298,11 @@ export default function AuthForm() {
                         <div>
                             <button
                                 type="submit"
-                                disabled={loading}
+                                disabled={
+                                    loading ||
+                                    !rateLimitInfo.allowed ||
+                                    !email.trim()
+                                }
                                 className="btn-primary w-full py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             >
                                 {loading ? (
@@ -157,6 +324,7 @@ export default function AuthForm() {
                                 onClick={() => {
                                     setIsLogin(!isLogin);
                                     setError("");
+                                    setSuccess("");
                                 }}
                                 className="text-sm text-primary-600 hover:text-primary-500 font-medium transition-colors"
                             >
@@ -165,6 +333,18 @@ export default function AuthForm() {
                                     : "Bereits registriert? 👉 Anmelden"}
                             </button>
                         </div>
+
+                        {isLogin && (
+                            <div className="text-center pt-2">
+                                <button
+                                    type="button"
+                                    onClick={handleResendVerification}
+                                    className="text-xs text-gray-500 hover:text-primary-600 transition-colors"
+                                >
+                                    📧 Keine Bestätigungs-E-Mail erhalten?
+                                </button>
+                            </div>
+                        )}
                     </form>
                 </div>
             </div>

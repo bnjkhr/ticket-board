@@ -1,67 +1,92 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 import {
-  User,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-} from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+    User,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    sendEmailVerification,
+    applyActionCode,
+    checkActionCode,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+    user: User | null;
+    loading: boolean;
+    emailVerified: boolean;
+    signUp: (email: string, password: string) => Promise<void>;
+    signIn: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+    resendVerificationEmail: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null,
-  loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  logout: async () => {},
+    user: null,
+    loading: true,
+    emailVerified: false,
+    signUp: async () => {},
+    signIn: async () => {},
+    logout: async () => {},
+    resendVerificationEmail: async () => {},
 });
 
 export function useAuth() {
-  return useContext(AuthContext);
+    return useContext(AuthContext);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [emailVerified, setEmailVerified] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+            setEmailVerified(user?.emailVerified || false);
+            setLoading(false);
+        });
 
-    return unsubscribe;
-  }, []);
+        return unsubscribe;
+    }, []);
 
-  const signUp = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
-  };
+    const signUp = async (email: string, password: string) => {
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password,
+        );
+        // Sende Verifizierungs-Email
+        await sendEmailVerification(userCredential.user);
+    };
 
-  const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
-  };
+    const resendVerificationEmail = async () => {
+        if (auth.currentUser) {
+            await sendEmailVerification(auth.currentUser);
+        }
+    };
 
-  const logout = async () => {
-    await signOut(auth);
-  };
+    const signIn = async (email: string, password: string) => {
+        await signInWithEmailAndPassword(auth, email, password);
+    };
 
-  const value = {
-    user,
-    loading,
-    signUp,
-    signIn,
-    logout,
-  };
+    const logout = async () => {
+        await signOut(auth);
+    };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    const value = {
+        user,
+        loading,
+        emailVerified,
+        signUp,
+        signIn,
+        logout,
+        resendVerificationEmail,
+    };
+
+    return (
+        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    );
 }
