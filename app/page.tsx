@@ -22,24 +22,26 @@ export default function Home() {
 
     if (!emailVerified) {
         return (
-            <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
                 <div className="max-w-md w-full space-y-8 animate-fade-in">
                     <div className="text-center">
-                        <div className="mx-auto w-20 h-20 bg-gradient-to-br from-warning-500 to-orange-500 rounded-3xl flex items-center justify-center mb-4 shadow-colorful">
-                            <span className="text-3xl">📧</span>
+                        <div className="mx-auto w-16 h-16 bg-warning-500 rounded-xl flex items-center justify-center mb-4 shadow-soft">
+                            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
                         </div>
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-warning-600 to-orange-600 bg-clip-text text-transparent">
+                        <h2 className="text-2xl font-semibold text-primary-900">
                             E-Mail bestätigen
                         </h2>
-                        <p className="mt-2 text-gray-600">
+                        <p className="mt-2 text-gray-600 text-sm">
                             Bitte überprüfe deine E-Mail und klicke auf den
                             Bestätigungslink.
                         </p>
                     </div>
 
-                    <div className="glass-effect rounded-3xl p-8 shadow-medium">
+                    <div className="glass-effect rounded-xl p-8 shadow-medium">
                         <div className="space-y-6">
-                            <div className="rounded-2xl bg-warning-50 border border-warning-200 p-4">
+                            <div className="rounded-lg bg-warning-50 border border-warning-200 p-4">
                                 <p className="text-sm text-warning-800">
                                     <strong>Fast geschafft!</strong> Wir haben
                                     dir eine Bestätigungs-E-Mail an {user.email}{" "}
@@ -52,14 +54,14 @@ export default function Home() {
                                     onClick={resendVerificationEmail}
                                     className="btn-secondary w-full"
                                 >
-                                    📧 E-Mail erneut senden
+                                    E-Mail erneut senden
                                 </button>
 
                                 <button
                                     onClick={() => window.location.reload()}
-                                    className="text-sm text-primary-600 hover:text-primary-500 font-medium transition-colors"
+                                    className="text-sm text-primary-700 hover:text-primary-600 font-medium transition-colors"
                                 >
-                                    🔄 Seite aktualisieren
+                                    Seite aktualisieren
                                 </button>
                             </div>
                         </div>

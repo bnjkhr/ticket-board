@@ -67,19 +67,14 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-            <div className="glass-effect rounded-3xl max-w-lg w-full p-8 shadow-colorful animate-slide-up">
+            <div className="glass-effect rounded-xl max-w-lg w-full p-8 shadow-large animate-slide-up">
                 <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center">
-                            <span className="text-xl">✨</span>
-                        </div>
-                        <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                            Neues Ticket
-                        </h2>
-                    </div>
+                    <h2 className="text-xl font-semibold text-primary-900">
+                        Neues Ticket
+                    </h2>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 rounded-2xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                        className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
                     >
                         <svg
                             className="w-5 h-5 text-gray-600"
@@ -101,16 +96,16 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                     <div>
                         <label
                             htmlFor="title"
-                            className="block text-sm font-semibold text-gray-700 mb-2"
+                            className="block text-sm font-medium text-gray-700 mb-2"
                         >
-                            📝 Titel *
+                            Titel *
                         </label>
                         <input
                             type="text"
                             id="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all duration-200"
                             placeholder="z.B. API-Endpoint für User-Login implementieren"
                             required
                         />
@@ -119,16 +114,16 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                     <div>
                         <label
                             htmlFor="description"
-                            className="block text-sm font-semibold text-gray-700 mb-2"
+                            className="block text-sm font-medium text-gray-700 mb-2"
                         >
-                            📄 Beschreibung
+                            Beschreibung
                         </label>
                         <textarea
                             id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={4}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-none"
+                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all duration-200 resize-none"
                             placeholder="Weitere Details..."
                         />
                     </div>
@@ -137,9 +132,9 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                         <div>
                             <label
                                 htmlFor="status"
-                                className="block text-sm font-semibold text-gray-700 mb-2"
+                                className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                🎯 Status
+                                Status
                             </label>
                             <select
                                 id="status"
@@ -147,22 +142,20 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                                 onChange={(e) =>
                                     setStatus(e.target.value as TicketStatus)
                                 }
-                                className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all duration-200"
                             >
-                                <option value="todo">📋 To Do</option>
-                                <option value="in-progress">
-                                    🚀 In Progress
-                                </option>
-                                <option value="done">✅ Done</option>
+                                <option value="todo">To Do</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="done">Done</option>
                             </select>
                         </div>
 
                         <div>
                             <label
                                 htmlFor="priority"
-                                className="block text-sm font-semibold text-gray-700 mb-2"
+                                className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                ⚡ Priorität
+                                Priorität
                             </label>
                             <select
                                 id="priority"
@@ -172,19 +165,19 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                                         e.target.value as TicketPriority,
                                     )
                                 }
-                                className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all duration-200"
                             >
-                                <option value="low">🟢 Low</option>
-                                <option value="medium">🟡 Medium</option>
-                                <option value="high">🔴 High</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
                             </select>
                         </div>
                     </div>
 
                     {availableLabels.length > 0 && (
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-3">
-                                🏷️ Labels
+                            <label className="block text-sm font-medium text-gray-700 mb-3">
+                                Labels
                             </label>
                             <div className="flex flex-wrap gap-2">
                                 {availableLabels.map((label) => (
@@ -192,10 +185,10 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                                         key={label.id}
                                         type="button"
                                         onClick={() => toggleLabel(label.id)}
-                                        className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
+                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                                             selectedLabels.includes(label.id)
-                                                ? "ring-2 ring-offset-2 ring-primary-400 scale-105"
-                                                : "opacity-70 hover:opacity-100 scale-100"
+                                                ? "ring-2 ring-offset-2 ring-primary-900"
+                                                : "opacity-70 hover:opacity-100"
                                         }`}
                                         style={{
                                             backgroundColor: label.color,
@@ -213,14 +206,14 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-6 py-3 border border-gray-200 text-gray-700 font-medium rounded-2xl hover:bg-gray-50 transition-all duration-200"
+                            className="flex-1 px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-200"
                         >
                             Abbrechen
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting || !title.trim()}
-                            className="btn-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            className="btn-primary flex-1 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -228,7 +221,7 @@ export default function CreateTicketModal({ onClose }: CreateTicketModalProps) {
                                     Erstelle...
                                 </span>
                             ) : (
-                                "✨ Erstellen"
+                                "Erstellen"
                             )}
                         </button>
                     </div>

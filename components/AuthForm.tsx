@@ -157,12 +157,12 @@ export default function AuthForm() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
             <div className="max-w-md w-full space-y-8 animate-fade-in">
                 <div className="text-center">
-                    <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-3xl flex items-center justify-center mb-4 shadow-colorful">
+                    <div className="mx-auto w-16 h-16 bg-primary-900 rounded-xl flex items-center justify-center mb-4 shadow-soft">
                         <svg
-                            className="w-12 h-12 text-white"
+                            className="w-10 h-10 text-white"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -175,18 +175,18 @@ export default function AuthForm() {
                             />
                         </svg>
                     </div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                    <h2 className="text-2xl font-semibold text-primary-900">
                         Ticket Board
                     </h2>
-                    <p className="mt-2 text-gray-600">
+                    <p className="mt-2 text-gray-600 text-sm">
                         {isLogin ? "Melde dich an" : "Erstelle einen Account"}
                     </p>
                 </div>
 
-                <div className="glass-effect rounded-3xl p-8 shadow-medium">
+                <div className="glass-effect rounded-xl p-8 shadow-medium">
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="rounded-2xl bg-danger-50 border border-danger-200 p-4">
+                            <div className="rounded-lg bg-danger-50 border border-danger-200 p-4">
                                 <p className="text-sm text-danger-800">
                                     {error}
                                 </p>
@@ -194,7 +194,7 @@ export default function AuthForm() {
                         )}
 
                         {success && (
-                            <div className="rounded-2xl bg-success-50 border border-success-200 p-4">
+                            <div className="rounded-lg bg-success-50 border border-success-200 p-4">
                                 <p className="text-sm text-success-800">
                                     {success}
                                 </p>
@@ -205,9 +205,9 @@ export default function AuthForm() {
                             rateLimitInfo.allowed &&
                             rateLimitInfo.remainingAttempts !== undefined &&
                             rateLimitInfo.remainingAttempts < 3 && (
-                                <div className="rounded-2xl bg-warning-50 border border-warning-200 p-4">
+                                <div className="rounded-lg bg-warning-50 border border-warning-200 p-4">
                                     <p className="text-sm text-warning-800">
-                                        ⚠️ Noch{" "}
+                                        Noch{" "}
                                         {rateLimitInfo.remainingAttempts}{" "}
                                         Registrierungsversuch(e) übrig.
                                         {rateLimitInfo.resetTime && (
@@ -227,9 +227,9 @@ export default function AuthForm() {
                             rateLimitInfo.allowed &&
                             rateLimitInfo.remainingAttempts !== undefined &&
                             rateLimitInfo.remainingAttempts < 5 && (
-                                <div className="rounded-2xl bg-warning-50 border border-warning-200 p-4">
+                                <div className="rounded-lg bg-warning-50 border border-warning-200 p-4">
                                     <p className="text-sm text-warning-800">
-                                        ⚠️ Noch{" "}
+                                        Noch{" "}
                                         {rateLimitInfo.remainingAttempts}{" "}
                                         Login-Versuch(e) übrig.
                                         {rateLimitInfo.resetTime && (
@@ -249,9 +249,9 @@ export default function AuthForm() {
                             <div>
                                 <label
                                     htmlFor="email"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    📧 E-Mail
+                                    E-Mail
                                 </label>
                                 <input
                                     id="email"
@@ -261,7 +261,7 @@ export default function AuthForm() {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all duration-200"
                                     placeholder="deine@email.de"
                                     disabled={!rateLimitInfo.allowed}
                                 />
@@ -270,9 +270,9 @@ export default function AuthForm() {
                             <div>
                                 <label
                                     htmlFor="password"
-                                    className="block text-sm font-semibold text-gray-700 mb-2"
+                                    className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    🔐 Passwort
+                                    Passwort
                                 </label>
                                 <input
                                     id="password"
@@ -288,7 +288,7 @@ export default function AuthForm() {
                                     onChange={(e) =>
                                         setPassword(e.target.value)
                                     }
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all duration-200"
                                     placeholder="Mindestens 6 Zeichen"
                                     disabled={!rateLimitInfo.allowed}
                                 />
@@ -303,7 +303,7 @@ export default function AuthForm() {
                                     !rateLimitInfo.allowed ||
                                     !email.trim()
                                 }
-                                className="btn-primary w-full py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                className="btn-primary w-full py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? (
                                     <span className="flex items-center justify-center gap-2">
@@ -311,9 +311,9 @@ export default function AuthForm() {
                                         Bitte warten...
                                     </span>
                                 ) : isLogin ? (
-                                    "🚀 Anmelden"
+                                    "Anmelden"
                                 ) : (
-                                    "✨ Registrieren"
+                                    "Registrieren"
                                 )}
                             </button>
                         </div>
@@ -326,11 +326,11 @@ export default function AuthForm() {
                                     setError("");
                                     setSuccess("");
                                 }}
-                                className="text-sm text-primary-600 hover:text-primary-500 font-medium transition-colors"
+                                className="text-sm text-primary-700 hover:text-primary-600 font-medium transition-colors"
                             >
                                 {isLogin
-                                    ? "Noch kein Account? 🎉 Registrieren"
-                                    : "Bereits registriert? 👉 Anmelden"}
+                                    ? "Noch kein Account? Registrieren"
+                                    : "Bereits registriert? Anmelden"}
                             </button>
                         </div>
 
@@ -339,9 +339,9 @@ export default function AuthForm() {
                                 <button
                                     type="button"
                                     onClick={handleResendVerification}
-                                    className="text-xs text-gray-500 hover:text-primary-600 transition-colors"
+                                    className="text-xs text-gray-500 hover:text-primary-700 transition-colors"
                                 >
-                                    📧 Keine Bestätigungs-E-Mail erhalten?
+                                    Keine Bestätigungs-E-Mail erhalten?
                                 </button>
                             </div>
                         )}
