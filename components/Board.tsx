@@ -87,10 +87,10 @@ export default function Board() {
             <div className="space-y-6 animate-fade-in">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                        <h2 className="text-2xl font-semibold text-primary-900">
                             Deine Tickets
                         </h2>
-                        <p className="text-gray-600 mt-1">
+                        <p className="text-gray-500 mt-1 text-sm">
                             {tickets.length}{" "}
                             {tickets.length === 1 ? "Ticket" : "Tickets"}{" "}
                             insgesamt
@@ -102,17 +102,17 @@ export default function Board() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <DroppableColumn
                         id="todo"
-                        title="To Do 📋"
+                        title="To Do"
                         tickets={todoTickets}
                     />
                     <DroppableColumn
                         id="in-progress"
-                        title="In Progress 🚀"
+                        title="In Progress"
                         tickets={inProgressTickets}
                     />
                     <DroppableColumn
                         id="done"
-                        title="Done ✅"
+                        title="Done"
                         tickets={doneTickets}
                     />
                 </div>

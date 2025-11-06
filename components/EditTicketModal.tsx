@@ -110,7 +110,7 @@ export default function EditTicketModal({
                             htmlFor="title"
                             className="block text-sm font-semibold text-gray-700 mb-2"
                         >
-                            📝 Titel *
+                            Titel *
                         </label>
                         <input
                             type="text"
@@ -127,7 +127,7 @@ export default function EditTicketModal({
                             htmlFor="description"
                             className="block text-sm font-semibold text-gray-700 mb-2"
                         >
-                            📄 Beschreibung
+                            Beschreibung
                         </label>
                         <textarea
                             id="description"
@@ -144,7 +144,7 @@ export default function EditTicketModal({
                                 htmlFor="status"
                                 className="block text-sm font-semibold text-gray-700 mb-2"
                             >
-                                🎯 Status
+                                Status
                             </label>
                             <select
                                 id="status"
@@ -154,11 +154,11 @@ export default function EditTicketModal({
                                 }
                                 className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all duration-200"
                             >
-                                <option value="todo">📋 To Do</option>
+                                <option value="todo">To Do</option>
                                 <option value="in-progress">
-                                    🚀 In Progress
+                                    In Progress
                                 </option>
-                                <option value="done">✅ Done</option>
+                                <option value="done">Done</option>
                             </select>
                         </div>
 
@@ -167,7 +167,7 @@ export default function EditTicketModal({
                                 htmlFor="priority"
                                 className="block text-sm font-semibold text-gray-700 mb-2"
                             >
-                                ⚡ Priorität
+                                Priorität
                             </label>
                             <select
                                 id="priority"
@@ -179,9 +179,9 @@ export default function EditTicketModal({
                                 }
                                 className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all duration-200"
                             >
-                                <option value="low">🟢 Low</option>
-                                <option value="medium">🟡 Medium</option>
-                                <option value="high">🔴 High</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
                             </select>
                         </div>
                     </div>
@@ -189,7 +189,7 @@ export default function EditTicketModal({
                     {availableLabels.length > 0 && (
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-3">
-                                🏷️ Labels
+                                Labels
                             </label>
                             <div className="flex flex-wrap gap-2">
                                 {availableLabels.map((label) => (

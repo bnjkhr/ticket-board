@@ -25,19 +25,19 @@ export default function DroppableColumn({
         switch (id) {
             case "todo":
                 return isOver
-                    ? "status-todo border-primary-400 bg-primary-50"
+                    ? "status-todo border-gray-300 bg-gray-100"
                     : "status-todo";
             case "in-progress":
                 return isOver
-                    ? "status-progress border-secondary-400 bg-secondary-50"
+                    ? "status-progress border-blue-300 bg-blue-100"
                     : "status-progress";
             case "done":
                 return isOver
-                    ? "status-done border-success-400 bg-success-50"
+                    ? "status-done border-green-300 bg-green-100"
                     : "status-done";
             default:
                 return isOver
-                    ? "bg-primary-50 border-primary-400"
+                    ? "bg-gray-50 border-gray-300"
                     : "bg-white border-gray-200";
         }
     };
@@ -45,11 +45,11 @@ export default function DroppableColumn({
     const getBadgeColor = () => {
         switch (id) {
             case "todo":
-                return "bg-primary-100 text-primary-700";
+                return "bg-gray-200 text-gray-700";
             case "in-progress":
-                return "bg-secondary-100 text-secondary-700";
+                return "bg-blue-100 text-blue-700";
             case "done":
-                return "bg-success-100 text-success-700";
+                return "bg-green-100 text-green-700";
             default:
                 return "bg-gray-100 text-gray-700";
         }
@@ -58,14 +58,14 @@ export default function DroppableColumn({
     return (
         <div
             ref={setNodeRef}
-            className={`rounded-2xl border-2 p-4 min-h-[200px] transition-all duration-300 shadow-medium ${getStatusClasses()} ${
-                isOver ? "scale-105 shadow-colorful" : "card-hover"
+            className={`rounded-xl border p-4 min-h-[200px] transition-all duration-200 shadow-soft ${getStatusClasses()} ${
+                isOver ? "scale-[1.02]" : ""
             }`}
         >
             <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-gray-900">{title}</h3>
+                <h3 className="font-semibold text-base text-primary-900">{title}</h3>
                 <span
-                    className={`text-sm font-semibold px-2 py-1 rounded-full ${getBadgeColor()}`}
+                    className={`text-xs font-medium px-2 py-1 rounded-md ${getBadgeColor()}`}
                 >
                     {tickets.length}
                 </span>
@@ -80,13 +80,6 @@ export default function DroppableColumn({
                     ))}
                     {tickets.length === 0 && (
                         <div className="text-center py-8">
-                            <div className="text-4xl mb-2 opacity-50">
-                                {id === "todo"
-                                    ? "📝"
-                                    : id === "in-progress"
-                                      ? "⚡"
-                                      : "🎉"}
-                            </div>
                             <p className="text-sm text-gray-400 font-medium">
                                 {id === "todo"
                                     ? "Noch keine To-Do Tickets"

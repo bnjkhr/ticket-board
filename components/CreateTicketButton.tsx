@@ -10,12 +10,12 @@ export default function CreateTicketButton() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="btn-primary group"
+                className="btn-primary"
             >
                 <span className="flex items-center gap-2">
-                    <span className="text-lg group-hover:rotate-90 transition-transform duration-300">
-                        ➕
-                    </span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
                     <span>Neues Ticket</span>
                 </span>
             </button>

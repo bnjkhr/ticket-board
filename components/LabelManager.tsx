@@ -72,7 +72,7 @@ export default function LabelManager({ onClose }: LabelManagerProps) {
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-500 to-pink-500 rounded-2xl flex items-center justify-center">
-                            <span className="text-xl">🏷️</span>
+                            <span className="text-xl"></span>
                         </div>
                         <h2 className="text-2xl font-bold bg-gradient-to-r from-accent-600 to-pink-600 bg-clip-text text-transparent">
                             Labels verwalten
@@ -101,7 +101,7 @@ export default function LabelManager({ onClose }: LabelManagerProps) {
                 <form onSubmit={handleCreateLabel} className="space-y-5 mb-6">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            ✨ Neues Label
+                            Neues Label
                         </label>
                         <input
                             type="text"
@@ -114,7 +114,7 @@ export default function LabelManager({ onClose }: LabelManagerProps) {
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            🎨 Farbe
+                            Farbe
                         </label>
                         <div className="flex gap-3 flex-wrap">
                             {PRESET_COLORS.map((color) => (
@@ -138,7 +138,7 @@ export default function LabelManager({ onClose }: LabelManagerProps) {
                         disabled={!newLabelName.trim()}
                         className="btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
-                        ✨ Label erstellen
+                        Label erstellen
                     </button>
                 </form>
 
@@ -152,7 +152,7 @@ export default function LabelManager({ onClose }: LabelManagerProps) {
                         </div>
                     ) : labels.length === 0 ? (
                         <div className="text-center py-8">
-                            <div className="text-4xl mb-2 opacity-50">🏷️</div>
+                            <div className="text-4xl mb-2 opacity-50"></div>
                             <p className="text-sm text-gray-400 font-medium">
                                 Noch keine Labels vorhanden
                             </p>

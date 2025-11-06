@@ -16,11 +16,11 @@ export default function Header() {
 
     return (
         <>
-            <header className="glass-effect border-b border-white/20 shadow-soft sticky top-0 z-50">
+            <header className="glass-effect shadow-soft sticky top-0 z-50">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
+                            <div className="w-9 h-9 bg-primary-900 rounded-lg flex items-center justify-center">
                                 <svg
                                     className="w-5 h-5 text-white"
                                     fill="none"
@@ -35,7 +35,7 @@ export default function Header() {
                                     />
                                 </svg>
                             </div>
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                            <h1 className="text-xl font-semibold text-primary-900">
                                 Ticket Board
                             </h1>
                         </div>
@@ -44,17 +44,17 @@ export default function Header() {
                                 onClick={() => setShowLabelManager(true)}
                                 className="btn-secondary text-sm"
                             >
-                                🏷️ Labels
+                                Labels
                             </button>
-                            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white/60 rounded-xl">
-                                <div className="w-2 h-2 bg-success-500 rounded-full animate-pulse-soft"></div>
+                            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200">
+                                <div className="w-2 h-2 bg-success-500 rounded-full"></div>
                                 <span className="text-sm text-gray-600">
                                     {user?.email}
                                 </span>
                             </div>
                             <button
                                 onClick={handleLogout}
-                                className="text-sm px-3 py-1.5 text-gray-600 hover:text-danger-600 hover:bg-danger-50 rounded-xl transition-all duration-200"
+                                className="text-sm px-3 py-1.5 text-gray-600 hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-all duration-200"
                             >
                                 Abmelden
                             </button>
